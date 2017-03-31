@@ -84,7 +84,7 @@
                 <td><img gazetime="0.2" onclick="ClickBlue(0)" ongaze="ClickBlue(0)" src="DOWN.png" ongaze="SendToServer('tv3')" style="height: 75px;width: 75px;"></td>
             </tr>
             <tr>
-                <td colspan="3"><div id="col" style="background-color: #FF00FF; color: #FF00FF">a</div></td>
+                <td width="50%" colspan="3"><br/><br/><br/><hr><br/><br/><br/><div id="col" width="50%" style="background-color: #FF00FF; color: #FF00FF"><br/><br/><br/><br/><br/><br/><br/><br/></div></td>
             </tr>
         </table>
         <textarea hidden="hidden" id="r">128</textarea>
