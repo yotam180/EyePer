@@ -1,0 +1,114 @@
+<html>
+<head>
+	<%include applib%>
+	<script src="/speechapp/responsivevoice.js"></script>
+	<script>
+		var keyboard = [/*"1234567890",*/
+						"QWERTYUIOP",
+						"ASDFGHJKL.",
+						"ZXCVBNM,?!"];
+		$(document).ready(function() {
+			var tbl = "<table style='table-layout: fixed; width: 100%; height: 100%;'>";
+			for (var r = 0; r < 3; r++) {
+				tbl += "<tr>";
+				for (var i = 0; i < 10; i++) {
+					tbl += "<td char='" + keyboard[r][i] + "' gazetime='0.5' id='key" + r + "_" + i + "' style='text-align: center; border: 1px dotted lightgray; border-radius: 10px; padding: 5px;'><h1>" + keyboard[r][i] + "</h1></td>";
+				}
+				tbl += "</tr>";
+			}
+			tbl += "<tr style='height: 20%;'><td gazetime='0.5' colspan='2' id='backspace' style='text-align: center; border: 1px dotted lightgray; border-radius: 10px; padding: 5px; width: 25%;'>Backspace</td><td gazetime='0.5' colspan='3' id='whitespace' style='text-align: center; border: 1px dotted lightgray; border-radius: 10px; padding: 5px; width: 50%;'><h2>Whitespace</h2></td><td id='speakbtn' colspan='3' gazetime='1.5' style='text-align: center; border: 1px dotted lightgray; border-radius: 10px; padding: 5px;'><h1>Speak</h1></td><td gazetime='0.5' colspan='2' id='clear' style='text-align: center; border: 1px dotted lightgray; border-radius: 10px; padding: 5px; width: 25%;'>Clear</td></tr>";
+			tbl += "</table>";
+			$("#keyboard_div").html(tbl);
+			for (var r = 0; r < 3; r++) {
+				for (var i = 0; i < 10; i++) {
+					EyeX.attachGaze($("#key" + r + "_" + i)[0], (el) => {
+						type(el.getAttribute("char"));
+						el.style.backgroundColor = "skyblue";
+						setTimeout(function() {
+							el.style.backgroundColor = null;
+						}, 200);
+					});
+				}
+			}
+			
+			tbl = "<table style='table-layout: fixed; border: 2px solid black; width: 100%; height: 100%;'>";
+			for (var i = 0; i < 2; i++) {
+				tbl += "<tr>";
+				for (var j = 0; j < 3; j++) {
+					tbl += "<td gazetime='2' style='width: 33%; height: 50%;' id='ac" + (3*i + j).toString() + "'><h2>&nbsp;</h2></td>";
+				}
+				tbl += "</tr>";
+			}
+			tbl += "</table>";
+			$("#intellisense_div").html(tbl);
+			for (var i = 0; i < 6; i++) { // Check that one very very carefully!
+				EyeX.attachGaze($("#ac" + i)[0], (el) => { 
+					if (el.hasAttribute("intellisense") && el.getAttribute("intellisense")) {
+						$("#word").text($("#word").text().substring(0, $("#word").text().lastIndexOf(" ") + 1) + el.getAttribute("intellisense") + " "); 
+						$.ajax({
+							url: "autoComplete.wsx?mode=U&str=" + el.getAttribute("intellisense"),
+							type: "GET"
+						});
+					}
+				});
+			}
+			
+			EyeX.attachGaze($("#speakbtn")[0], (el) => { responsiveVoice.speak($("#word").text().replace(/\_/g, " "), "UK English Male"); el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200)});
+			EyeX.attachGaze($("#backspace")[0], (el) => {backspace();el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200);});
+			EyeX.attachGaze($("#clear")[0], (el) => {clear(); el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200)});
+			EyeX.attachGaze($("#whitespace")[0], (el) => { type(' '); el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200)});
+		
+			EyeX.onUpdate = function(x, y) {
+				$("#cursor").css({top: y, left: x});
+			}
+		});
+		
+		function type(l) {
+			$("#word").text($("#word").text() + l);
+			var word = $("#word").text().substring($("#word").text().lastIndexOf(" ")).trim();
+			console.log(word);
+			if (word.length > 1) {
+				$.ajax({
+					url: "autoComplete.wsx?mode=G&str=" + word,
+					type: "GET",
+					success: function(e) {
+						if (e) {
+							var words = e.split(",");
+							for (var i = 0; i < 6; i++) {
+								if (words.length > i) {
+									$("#ac" + i).html("<h1>" + words[i].toUpperCase() + "</h1>");
+									$("#ac" + i).attr("intellisense", words[i].toUpperCase());
+								} else {
+									$("#ac" + i).html("--");
+									$("#ac" + i).attr("intellisense", null);
+								}
+							}
+						}
+						else {
+							for (var i = 0; i < 6; i++) {
+								$("#ac" + i).html("--");
+								$("#ac" + i).attr("intellisense", null);
+							}
+						}
+					}
+				});
+			}
+		}
+		function backspace() {
+			if ($("#word").text().length > 0)
+				$("#word").text($("#word").text().substring(0, $("#word").text().length - 1));
+		}
+		function clear() {
+			$("#word").text("");
+		}
+	</script>
+</head>
+<body>
+	<div style="width: 100%; text-align: center; position: fixed">
+		<h1 id="word"></h1>
+	</div>
+	<div id="intellisense_div" style="position: fixed; background-color: lightgray; height: 25%; bottom: 55%; left: 0; width: 100%;">Autocompletion area</div>
+	<div id="keyboard_div" style="position: fixed; background-color: gray; height: 55%; bottom: 0; left: 0; width: 100%; border: 1px solid black;">Keyboard here</div>
+	<!-- <div id="cursor" style="position: fixed; width: 5px; height: 5px; background-color: blue;">&nbsp;</div> -->
+</body>
+</html>

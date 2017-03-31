@@ -1,0 +1,108 @@
+<@@@
+	using System.IO;
+	using System.Collections.Generic;
+@>
+<@@
+	public static bool Scontains(string _del,string _str)
+	{
+		string del = _del.ToUpper();
+		string str = _str.ToUpper();
+		int count=0;
+		for(int i=0;i<str.Length;i++)
+		{
+			if(del[i]==str[i])
+			{
+				count++;
+				if(count==del.Length)
+					return true;
+			}
+			else
+				break;
+		}
+		return false;
+	}
+@>
+<@
+	if(_GET["mode"]=="U")
+	{
+		bool found = false;
+		string st1=_GET["str"];
+		string content = File.ReadAllText(@"web_docs/speechapp/searchedWords.txt");//TODO : change file name
+		string[] arr = content.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+		string temp = "";
+		for (int i = 0; i < arr.Length; i++)
+		{
+			string[] t2 = arr[i].Split(":".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+			if (t2[0] == st1)
+			{
+				temp += t2[0] + ":" + (int.Parse(t2[1]) + 1).ToString() + ";";
+				found = true;
+			}
+			else
+			{
+				temp += arr[i] + ";";
+			}
+		}
+		if (!found)
+		{
+			temp += st1 + ":" + 1.ToString() + ";";
+		}
+		File.WriteAllText(@"web_docs/speechapp/searchedWords.txt", temp);//TODO: change file name
+	}
+	else if(_GET["mode"]=="G")
+	{
+		List<string> coms = new List<string>();
+		Dictionary<string, int> dict = new Dictionary<string, int>();
+		string st1 = _GET["str"];
+		string str = File.ReadAllText(@"web_docs/speechapp/searchedWords.txt");
+		string[] autoCompletes = str.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+		int count = 0, i = 0;
+		int max = 0;
+		while (i < autoCompletes.Length)
+		{
+			string[] t = autoCompletes[i].Split(":".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+			if (Scontains(st1, t[0]))
+			{
+				dict[t[0]] = int.Parse(t[1]);
+				if (int.Parse(t[1]) > max)
+				{
+					max = int.Parse(t[1]);
+				}
+			}
+			i++;
+		}
+		i = 0;
+		while (i < max)
+		{
+			foreach (string key in dict.Keys)
+			{
+				if (dict[key] == max - i)
+				{
+					coms.Add(key);
+					count++;
+					if (count == 6)
+						break;
+				}
+			}
+			if (count == 6)
+				break;
+			i++;
+		}
+		str = File.ReadAllText(@"web_docs/speechapp/words.txt");
+		autoCompletes = str.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+		i = 0;
+		while (count <= 6 && i < autoCompletes.Length)
+		{
+			if (Scontains(st1, autoCompletes[i]))
+			{
+				coms.Add(autoCompletes[i]);
+				count++;
+			}
+			i++;
+		}
+		for (int j = 0; j < coms.Count; j++)
+		{
+			echo(coms[j] + ",");
+		}
+	}
+@>

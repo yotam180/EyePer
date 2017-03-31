@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <%include applib%>
+        <script>
+            function HttpSend(url)
+            {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("GET", url);
+                xmlhttp.send();
+                return xmlhttp.responseText;
+            }
+            function SendToServer(param)
+            {
+                HttpSend("http://192.168.0.124:12345/?"+param);
+            }
+            function ClickRed(num)
+            {
+                if(num===1)
+                {
+                    if(parseInt(document.getElementById("r").textContent)+16<=256)
+                    document.getElementById("r").textContent=parseInt(document.getElementById("r").textContent)+16;
+                }
+                else
+                {
+                    if(document.getElementById("r").textContent-16>=0)
+                    document.getElementById("r").textContent=parseInt(document.getElementById("r").textContent)-16;
+                }
+                UpdateColor();
+            }
+            function ClickBlue(num)
+            {
+                if(num===1)
+                {
+                    if(parseInt(document.getElementById("b").textContent)+16<=256)
+                        document.getElementById("b").textContent= parseInt(document.getElementById("b").textContent)+16;
+                }
+                else
+                {
+                    if(document.getElementById("b").textContent-16>=0)
+                        document.getElementById("b").textContent= parseInt(document.getElementById("b").textContent)-16;
+                }
+                UpdateColor();
+            }
+            function ClickGreen(num)
+            {
+                if(num===1)
+                {
+                    if(parseInt(document.getElementById("g").textContent)+16<=256)
+                        document.getElementById("g").textContent= parseInt(document.getElementById("g").textContent)+16;
+                }
+                else
+                {
+                    if(document.getElementById("g").textContent-16>=0)
+                        document.getElementById("g").textContent = parseInt(document.getElementById("g").textContent)-16;
+                }
+                UpdateColor();
+            }
+            function UpdateColor()
+            {
+                var color = parseInt(document.getElementById("r").textContent).toString(16);
+                color+=parseInt(document.getElementById("g").textContent).toString(16);
+                color+=parseInt(document.getElementById("b").textContent).toString(16);
+                document.getElementById("col").style.color=color;
+                document.getElementById("col").style.backgroundColor=color;
+                SendToServer("red="+document.getElementById("r").textContent+"&green="+document.getElementById("g").textContent+"&blue="+document.getElementById("b").textContent);
+            }
+        </script>
+    </head>
+    <body>
+        <table style="width:100%;text-align: center">
+            <tr>
+                <td><img gazetime="0.2" onclick="ClickRed(1)"  src="UP.png" style="height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.2" onclick="ClickGreen(1)" ongaze="ClickGreen(1)" src="UP.png" style="height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.2" onclick="ClickBlue(1)" ongaze="ClickBlue(1)" src="UP.png" style="height: 75px;width: 75px;"></td>
+            </tr>
+            <tr>
+                <td><img src="RED.jpg" style="height: 75px;width: 75px;border-radius: 75px;"></td>
+                <td><img src="GREEN.jpg" style="height: 75px;width: 75px;border-radius: 75px;"></td>
+                <td><img src="BLUE.png" style="height: 75px;width: 75px;border-radius: 75px;"></td>
+            </tr>
+            <tr>
+                <td><img gazetime="0.2" onclick="ClickRed(0)" ongaze="ClickRed(0)" src="DOWN.png" ongaze="SendToServer('tv1')" style="height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.2" onclick="ClickGreen(0)" ongaze="ClickGreen(0)" src="DOWN.png" ongaze="SendToServer('tv2')" style="height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.2" onclick="ClickBlue(0)" ongaze="ClickBlue(0)" src="DOWN.png" ongaze="SendToServer('tv3')" style="height: 75px;width: 75px;"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><div id="col" style="background-color: #FF00FF; color: #FF00FF">a</div></td>
+            </tr>
+        </table>
+        <textarea hidden="hidden" id="r">128</textarea>
+        <textarea hidden="hidden" id="g">128</textarea>
+        <textarea hidden="hidden" id="b">128</textarea>
+    </body>
+</html>

@@ -1,0 +1,87 @@
+<script src="jquery.js"></script>
+<script type="text/javascript">
+(function(){
+	function RetrieveVar()
+	{
+		return window.dialogArguments;
+	}
+	function StoreVar(value)
+	{
+		window.returnValue= value;
+	}
+	function Redirect(url)
+	{
+		window.location = url;
+	}
+
+	function inside(pos,elements)
+	{
+		locs = elements.getBoundingClientRect();
+		if (Math.abs(locs.top - poses[1]) < element.style.height && Math.abs(locs.left - poses[0]) < elements.style.width) {
+			return true;
+		}
+		return false;
+	}
+
+	window.EyeX = {};
+	window.onload = function() {
+		var soc = new WebSocket("ws://localhost:9000");
+		var currentElem = null;
+		var gazetime = 0;
+		soc.onmessage = (eye) => {
+			if (eye != "null")
+			{
+				var eyeX = parseInt(eye.data.split(',')[0]);
+				var eyeY = parseInt(eye.data.split(',')[1]);
+				var el = null;
+				gazables.forEach(function(x) {
+					if (eyeX > x.getBoundingClientRect().left - window.innerWidth * 0.05 && eyeX < x.getBoundingClientRect().left + x.getBoundingClientRect().width + window.innerWidth * 0.05
+						&& eyeY > x.getBoundingClientRect().top - window.innerHeight * 0.05 && eyeY < x.getBoundingClientRect().top + x.getBoundingClientRect().height + window.innerHeight * 0.05)
+					{
+						el = x;
+					}
+					else {
+						x.setAttribute("gazeprogress", 0);
+					}
+				});
+				if (el != currentElem || el == null) {
+					gazetime = 0;
+					currentElem = el;
+				}
+				else {
+					gazetime += 0.05;
+					currentElem = el;
+					el.setAttribute("gazeprogress", gazetime);
+					if ((el.hasAttribute("gazetime") && parseInt(el.getAttribute("gazetime")) <= gazetime) || (!el.hasAttribute("gazetime") && gazetime >= 1.0)) {
+						gazetime = 0;
+						currentElem = null;
+						if (typeof(el.getAttribute("ongaze")) == "string") {
+							eval(el.getAttribute("ongaze"));
+						}
+						else if (typeof(el.getAttribute("ongaze")) == "function") {
+							el.getAttribute("ongaze")();
+						}
+					}
+				}
+			}
+		};
+		soc.onopen = () => {
+			setInterval(function() {
+				soc.send("");
+			}, 50);
+		};
+		var all = $("*");
+		var gazables = [];
+		all.each(function(x) {
+			if (all[x].hasAttribute("ongaze")) {
+				console.log(all[x]);
+				gazables.push(all[x]);
+			}
+		});
+		window.EyeX.attachGaze = function(el, handler) {
+			el.setAttribute("ongaze", handler);
+			gazables.push(el);
+		};
+	};
+})();
+</script>

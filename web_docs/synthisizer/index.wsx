@@ -1,0 +1,52 @@
+<html>
+<head>
+<%include applib%>
+<script src="/synthisizer/responsivevoice.js"></script>
+<script>
+	var sentence = 0;
+	var speech = [];
+	$(document).ready(function() {
+		$.ajax({
+			url: "fileloader.wsx?file=speech.txt",
+			type: "GET",
+			success: function(e) {
+				speech = e.split(/\n/g);
+				$("#cursent").text(speech[0]);
+				sentence = 0;
+			}
+		});
+	});
+	
+	function prev() {
+		if (sentence > 0) {
+			sentence--;
+			$("#cursent").text(speech[sentence]);
+		}
+	}
+	
+	function next() {
+		if (sentence < speech.length - 1) {
+			sentence++;
+			$("#cursent").text(speech[sentence]);
+		}
+	}
+	
+	function speak() {
+		if (!responsiveVoice.isPlaying())
+		{
+			responsiveVoice.speak($("#cursent").text(), "UK English Male");
+			sentence++;
+			$("#cursent").text(speech[sentence]);
+		}
+	}
+</script>
+</head>
+<body>
+<div id="prev" gazetime="0.5" ongaze="prev();" style="position: fixed; top: 0; height: 25%; width: 30%; left: 0; background-color: lightgray; text-align: center;"><h1>Prev</h1></div>
+<div id="read" gazetime="0.5" ongaze="speak();" style="position: fixed; top: 0; height: 25%; width: 40%; left: 30%; background-color: skyblue; text-align: center;"><h1>Read</h1></div>
+<div id="next" gazetime="0.5" ongaze="next();" style="position: fixed; top: 0; height: 25%; width: 30%; right: 0; background-color: lightgray; text-align: center;"><h1>Next</h1></div>
+<div style="width: 100%; text-align: center; position: fixed; top: 25%;"><h1 style="" id="cursent"></h1></div>
+
+<div id="closediv" style="width: 100%; height: 10%; bottom: 0; position: fixed; background-color: red; right: 0;" ongazeenter="(el)=>el.style.backgroundColor = 'palevioletred';" ongazeleave="(el) => el.style.backgroundColor = 'red';" gazetime="1.5" ongaze="location.href='/';"><img src="/home.png" style="height: 100%; width: auto;" /></div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<html>
+<head>
+	<title></title>
+	<style>
+		input{
+			border-radius:30px;
+		}
+	</style>
+</head>
+<body>
+<table>
+	
+
+<tr><td style='width: 300px'></td><td><img src='up.jpg' ongaze='up()' onclick="up()" style="height:50px;width:50px"/></td></tr>
+<tr><td style="width: 300px"></td><td><img src='down.jpg' ongaze='down()' onclick="down()"style="height:50px;width:50px"/></td></tr>
+<tr><td style="width: 300px"></td><td><input type='text' id='txt' value='0' style="height:50px;width:200px"/></td></tr>
+</table>
+<script type='text/javascript'>
+function up()
+{
+	var a = document.getElementById("txt");
+	a.value = (parseInt(a.value) + 1).toString();
+	SendToServer(document.getElementById("txt").value);
+}
+function down()
+{
+	var a = document.getElementById("txt");
+	a.value = (parseInt(a.value) -1 ).toString();
+	SendToServer(document.getElementById("txt").value);
+}
+setInterval(function () { SendToServer(document.getElementById("txt").value); }, 5000);
+
+
+</script>
+</body>
+</html>

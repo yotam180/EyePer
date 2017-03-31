@@ -1,0 +1,71 @@
+<@@@
+	using System.IO;
+	using System.Collections.Generic;
+@>
+<@@
+	public static bool Scontains(string _del,string _str)
+	{
+		string del = _del.ToUpper();
+		string str = _str.ToUpper();
+		int count=0;
+		for(int i=0;i<str.Length;i++)
+		{
+			if(del[i]==str[i])
+			{
+				count++;
+				if(count==del.Length)
+					return true;
+			}
+			else
+				break;
+		}
+		return false;
+	}
+@>
+<@
+	try{
+		if(_GET["mode"]=="U")
+	{
+		string content = File.ReadAllText("web_docs/speechapp/searchedWords.txt");
+		if (!content.Contains(_GET["str"])) {
+			File.WriteAllText("web_docs/speechapp/searchedWords.txt", content + "\r\n" + _GET["str"]);
+		}
+	}
+	else if(_GET["mode"]=="G")
+	{
+		List<string> coms = new List<string>();
+		string st1 = _GET["str"];
+		string str = File.ReadAllText("web_docs/speechapp/searchedWords.txt");
+		string[]  autoCompletes = str.Split("\r\n".ToCharArray(),StringSplitOptions.RemoveEmptyEntries);
+		int count=0,i=0;
+		while(count<=6&&i<autoCompletes.Length)
+		{
+			if(Scontains(st1,autoCompletes[i]))
+			{
+				coms.Add(autoCompletes[i]);
+				count++;
+			}
+			i++;
+		}
+		str = File.ReadAllText("web_docs/speechapp/words.txt");
+		autoCompletes = str.Split("\r\n".ToCharArray(),StringSplitOptions.RemoveEmptyEntries);
+		i=0;
+		while(count<=6&&i<autoCompletes.Length)
+		{
+			if(Scontains(st1,autoCompletes[i]))
+			{
+				coms.Add(autoCompletes[i]);
+				count++;
+			}
+			i++;
+		}
+		for(int j=0;j<coms.Count;j++)
+		{
+			echo(coms[j]+",");
+		}
+	}
+	}
+	catch(Exception e){
+		echo(e.Message);
+	}
+@>

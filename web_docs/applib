@@ -1,0 +1,132 @@
+<script src="/jquery.js"></script>
+<script type="text/javascript">
+(function(){
+	function RetrieveVar()
+	{
+		return window.dialogArguments;
+	}
+	function StoreVar(value)
+	{
+		window.returnValue= value;
+	}
+	function Redirect(url)
+	{
+		window.location = url;
+	}
+
+	function inside(pos,elements)
+	{
+		locs = elements.getBoundingClientRect();
+		if (Math.abs(locs.top - poses[1]) < element.style.height && Math.abs(locs.left - poses[0]) < elements.style.width) {
+			return true;
+		}
+		return false;
+	}
+
+	window.EyeX = {};
+	$(document).ready(function() {
+		var soc = new WebSocket("ws://localhost:9000");
+		var currentElem = null;
+		var gazetime = 0;
+		soc.onmessage = (eye) => {
+			if (eye != "null")
+			{
+				var eyeX = parseInt(eye.data.split(',')[0]);
+				var eyeY = parseInt(eye.data.split(',')[1]);
+				if (EyeX["onUpdate"]) {
+					EyeX["onUpdate"](eyeX, eyeY);
+				}
+				var el = null;
+				gazables.forEach(function(x) {
+					if (eyeX > x.getBoundingClientRect().left && eyeX < x.getBoundingClientRect().left + x.getBoundingClientRect().width
+						&& eyeY > x.getBoundingClientRect().top && eyeY < x.getBoundingClientRect().top + x.getBoundingClientRect().height)
+					{
+						el = x;
+						if (!x.hasAttribute("gazed") || x.getAttribute("gazed") != "true") {
+							x.setAttribute("gazed", true);
+							if (x.hasAttribute("ongazeenter")) {
+								if (typeof(x.getAttribute("ongazeenter")) == "string") {
+									var a = eval(x.getAttribute("ongazeenter"));
+									if (typeof(a) == "function") {
+										a(x);
+									}
+								}
+								else if (typeof(x.getAttribute("ongazeenter")) == "function") {
+									x.getAttribute("ongazeenter")();
+								}
+							}
+						}
+					}
+					else {
+						x.setAttribute("gazeprogress", 0);
+						if (x.hasAttribute("gazed") && x.getAttribute("gazed") == "true") {
+							x.setAttribute("gazed", false);
+							if (x.hasAttribute("ongazeleave")) {
+								if (typeof(x.getAttribute("ongazeleave")) == "string") {
+									var a = eval(x.getAttribute("ongazeleave"));
+									if (typeof(a) == "function") {
+										a(x);
+									}
+								}
+								else if (typeof(x.getAttribute("ongazeleave")) == "function") {
+									x.getAttribute("ongazeleave")();
+								}
+							}
+						}
+					}
+				});
+				if (el != currentElem || el == null) {
+					gazetime = 0;
+					currentElem = el;
+				}
+				else {
+					gazetime += 0.05;
+					currentElem = el;
+					el.setAttribute("gazeprogress", gazetime);
+					if ((el.hasAttribute("gazetime") && parseFloat(el.getAttribute("gazetime")) <= gazetime) || (!el.hasAttribute("gazetime") && gazetime >= 1.0)) {
+						gazetime = 0;
+						currentElem = null;
+						if (typeof(el.getAttribute("ongaze")) == "string") {
+							var a = eval(el.getAttribute("ongaze"));
+							if (typeof(a) == "function") {
+								a(el);
+							}
+						}
+						else if (typeof(el.getAttribute("ongaze")) == "function") {
+							el.getAttribute("ongaze")();
+						}
+					}
+				}
+			}
+		};
+		soc.onopen = () => {
+			setInterval(function() {
+				soc.send("");
+			}, 50);
+		};
+		var all = $("*");
+		window.gazables = [];
+		all.each(function(x) {
+			if (all[x].hasAttribute("ongaze")) {
+				console.log("Gazable: ", all[x]);
+				gazables.push(all[x]);
+			}
+		});
+		window.EyeX.attachGaze = function(el, handler) {
+			el.setAttribute("ongaze", handler);
+			/*var a = document.createElement('div');
+			a.style.height = el.getBoundingClientRect().height;
+			a.style.width = el.getBoundingClientRect().width;
+			a.style.top = el.getBoundingClientRect().top;
+			a.style.left = el.getBoundingClientRect().left;
+			a.position = "fixed;";
+			a.style.border = "2px solid green";
+			a.innerHTML = el.id;
+			a.style.zIndex = 1000;
+			document.body.appendChild(a);*/
+			gazables.push(el);
+		};
+	});
+})();
+</script>
+<div id="closediv" style="zindex: 1000; text-align: center; position: fixed; background-color: red; height: 7%; width: 5%; top: 0; right: 0;" ongazeenter="(el)=>el.style.backgroundColor = 'palevioletred';" ongazeleave="(el) => el.style.backgroundColor = 'red';" gazetime="1.5" ongaze="location.href='/';"><img src="/home.png" style="height: 100%; width: auto;" /></div>
