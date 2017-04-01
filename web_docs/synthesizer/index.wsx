@@ -1,7 +1,7 @@
 <html>
 <head>
 <%include applib%>
-<script src="/synthisizer/responsivevoice.js"></script>
+<script src="/synthesizer/responsivevoice.js"></script>
 <script>
 	var sentence = 0;
 	var speech = [];

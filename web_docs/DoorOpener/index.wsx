@@ -1,6 +1,6 @@
 <html>
     <head>
-        <script src="jquery-3.2.0.min.js" type="text/javascript"></script>
+        <%include applib%>
         <script>
             function Redirect(url)
             {
@@ -8,11 +8,11 @@
             }
             function GetSend(param)
             {
-                HttpSend("http://192.168.0.25:25655/?device=servo&mode="+param);
+                HttpSend(houseip+"/?device=servo&mode="+param);
             }
             function SendToServer(param)
             {
-                GetSend("Server.php",param)
+                 HttpSend(houseip+"/?device=servo&mode="+param);
             }
             function HttpSend(url)
             {
@@ -49,7 +49,7 @@
         <img onclick="Redirect('index.html')" src="HOME.png" style="height: 50px;width: 50px;">    
         <table style="width:100%;text-align: center">
             <tr>
-                <td><img id='img' src="CLOSE.jpg" style="height: 400px;width: 250px;" onclick="Toggle()"></td>
+                <td><img id='img' src="CLOSE.jpg" style="height: 400px;width: 250px;" ongaze="Toggle();" onclick="Toggle()"></td>
             </tr>
         </table>
         <textarea hidden="hidden" id="i" name="c">w</textarea>

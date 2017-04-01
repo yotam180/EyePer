@@ -1,39 +1,56 @@
 <html>
 <head>
 	<title></title>
-	<%include applib%>
 	<style>
+		
 		input{
 			border-radius:30px;
+			border: 0;
+			font-size: 30px;
+			text-align: center;
+			font-family: Arial, Helvetica, sans-serif;
 		}
+		
 	</style>
 </head>
+<%include applib%>
 <body>
 <table>
 	
-
-<tr><td style="width: 300px"></td><td><img src='down.jpg' ongaze='down()' onclick="down()"style="height:100px;width:100px"/><img src='up.jpg' ongaze='up()' onclick="up()" style="height:100px;width:100px"/></td></tr>
-<tr><td style="width: 300px"></td><td><input type='text' id='txt' value='0' style="height:50px;width:200px"/></td></tr>
+<br/><br/><br/><br/><br/><br/>
+<tr><td style="width: 500px"></td><td><img id='down1' src='down.jpg' ongaze='down()' onclick="down()"style="height:180px;width:180px"/><img id='up1' src='up.jpg' ongaze='up()' onclick="up()" style="height:180px;width:180px"/></td></tr>
+<tr><td style="width: 500px"></td><td><input type='text' id='txt' value='0' style="height:50px;width:400px"/></td></tr>
 </table>
 <script type='text/javascript'>
 function httpGet(url)
 {
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", url, false);
-	xmlhttp.send(null);
-	return xmlhttp.responseText;
+	$.ajax({
+		url: url,
+		type: "GET"
+	});
 }
 function SendToServer(value)
 {
-	httpGet("192.168.0.212:25655?device=air&mode="+value.toString());
+	httpGet(houseip+"/?device=air&mode="+value.toString());
 }
 function up()
 {
 	var a = document.getElementById("txt");
-	if(parseInt(a.value)>=100)
+	if(parseInt(a.value)>=10)
 	{}
 	else{
 		a.value = (parseInt(a.value) + 1).toString();
+		document.documentElement.style.backgroundColor="blue";
+		document.getElementById("txt").style.backgroundColor="blue";
+		document.getElementById("txt").style.color="white";
+		document.getElementById("up1").src="blueUp.jpg";
+		document.getElementById("down1").src="blueDown.jpg";
+		setTimeout(function(){document.documentElement.style.backgroundColor="";
+		document.getElementById("up1").src="up.jpg";
+		document.getElementById("down1").src="down.jpg";
+		document.getElementById("txt").style.backgroundColor="white";
+		document.getElementById("txt").style.color="black";
+		},400);	
 		SendToServer(document.getElementById("txt").value);
 	}
 }
@@ -44,6 +61,17 @@ function down()
 	{}
 	else{
 		a.value = (parseInt(a.value) -1 ).toString();
+		document.documentElement.style.backgroundColor="red";
+		document.getElementById("txt").style.backgroundColor="red";
+		document.getElementById("txt").style.color="white";
+		document.getElementById("down1").src = "redDown.jpg";
+		document.getElementById("up1").src = "redUp.jpg";
+		setTimeout(function(){document.documentElement.style.backgroundColor="";
+		document.getElementById("up1").src = "up.jpg";
+		document.getElementById("down1").src = "down.jpg";
+		document.getElementById("txt").style.backgroundColor="white";
+		document.getElementById("txt").style.color="black";
+		},400);
 		SendToServer(document.getElementById("txt").value);
 	}
 }

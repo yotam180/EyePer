@@ -1,5 +1,6 @@
 <script src="jquery.js"></script>
 <script type="text/javascript">
+	var http://192.168.0.25:25655 = "http://http://192.168.0.25:25655:25655";
 (function(){
 	function RetrieveVar()
 	{

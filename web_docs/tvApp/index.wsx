@@ -2,6 +2,7 @@
     <head>
         <%include applib%>
         <script>
+            var current = 0;
             function HttpSend(url)
             {
                 var xmlhttp = new XMLHttpRequest();
@@ -11,13 +12,24 @@
             }
             function SendToServer(param)
             {
-                HttpSend("http://192.168.0.124:12345/?"+param);
+                if(current!=param)
+                    document.getElementById(param.toString()).src = "s"+param.toString()+".jpg";
+                HttpSend(tvip+"/?picture="+param);
+                if(current!=param)
+                    setTimeout(function(){document.getElementById(param.toString()).src = param.toString()+".jpg";},500);
+                current = param;
             }
-            function ClickRed(num)
+            function shutdown()
+            {
+                document.getElementById('off').src = "sturn.jpg";
+                HttpSend(tvip+"/?picture=0");
+                setTimeout(function(){document.getElementById('off').src = "turn.jpg";},500);
+            }
+            /*function ClickRed(num)
             {
                 if(num===1)
                 {
-                    if(parseInt(document.getElementById("r").textContent)+16<=256)
+                    if(parseInt(document.getElementById("r").textContent)+16<256)
                     document.getElementById("r").textContent=parseInt(document.getElementById("r").textContent)+16;
                 }
                 else
@@ -31,7 +43,7 @@
             {
                 if(num===1)
                 {
-                    if(parseInt(document.getElementById("b").textContent)+16<=256)
+                    if(parseInt(document.getElementById("b").textContent)+16<256)
                         document.getElementById("b").textContent= parseInt(document.getElementById("b").textContent)+16;
                 }
                 else
@@ -45,7 +57,7 @@
             {
                 if(num===1)
                 {
-                    if(parseInt(document.getElementById("g").textContent)+16<=256)
+                    if(parseInt(document.getElementById("g").textContent)+16<256)
                         document.getElementById("g").textContent= parseInt(document.getElementById("g").textContent)+16;
                 }
                 else
@@ -63,32 +75,33 @@
                 document.getElementById("col").style.color=color;
                 document.getElementById("col").style.backgroundColor=color;
                 SendToServer("red="+document.getElementById("r").textContent+"&green="+document.getElementById("g").textContent+"&blue="+document.getElementById("b").textContent);
-            }
+            }*/
+
         </script>
     </head>
-    <body>
-        <table style="width:100%;text-align: center">
+    <body onload="SendToServer(0)">
+        <table style="width:100%;text-align: center; ">
             <tr>
-                <td><img gazetime="0.2" onclick="ClickRed(1)"  src="UP.png" style="height: 75px;width: 75px;"></td>
-                <td><img gazetime="0.2" onclick="ClickGreen(1)" ongaze="ClickGreen(1)" src="UP.png" style="height: 75px;width: 75px;"></td>
-                <td><img gazetime="0.2" onclick="ClickBlue(1)" ongaze="ClickBlue(1)" src="UP.png" style="height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.7" id='1' onclick="SendToServer(1)" ongaze="SendToServer(1)" src="1.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.7" id='2' onclick="SendToServer(2)" ongaze="SendToServer(2)" src="2.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.7" id='3' onclick="SendToServer(3)" ongaze="SendToServer(3)" src="3.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
             </tr>
             <tr>
-                <td><img src="RED.jpg" style="height: 75px;width: 75px;border-radius: 75px;"></td>
-                <td><img src="GREEN.jpg" style="height: 75px;width: 75px;border-radius: 75px;"></td>
-                <td><img src="BLUE.png" style="height: 75px;width: 75px;border-radius: 75px;"></td>
+                <td><img gazetime="0.7" id='4' onclick="SendToServer(4)" ongaze="SendToServer(4)" src="4.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.7" id='5' onclick="SendToServer(5)" ongaze="SendToServer(5)" src="5.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.7" id='6' onclick="SendToServer(6)" ongaze="SendToServer(6)" src="6.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
             </tr>
             <tr>
-                <td><img gazetime="0.2" onclick="ClickRed(0)" ongaze="ClickRed(0)" src="DOWN.png" ongaze="SendToServer('tv1')" style="height: 75px;width: 75px;"></td>
-                <td><img gazetime="0.2" onclick="ClickGreen(0)" ongaze="ClickGreen(0)" src="DOWN.png" ongaze="SendToServer('tv2')" style="height: 75px;width: 75px;"></td>
-                <td><img gazetime="0.2" onclick="ClickBlue(0)" ongaze="ClickBlue(0)" src="DOWN.png" ongaze="SendToServer('tv3')" style="height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.7" id='7' onclick="SendToServer(7)" ongaze="SendToServer(7)" src="7.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.7" id='8' onclick="SendToServer(8)" ongaze="SendToServer(8)" src="8.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
+                <td><img gazetime="0.7" id='9' onclick="SendToServer(9)" ongaze="SendToServer(9)" src="9.jpg" style="padding: 30px; height: 75px;width: 75px;"></td>
             </tr>
             <tr>
-                <td width="50%" colspan="3"><br/><br/><br/><hr><br/><br/><br/><div id="col" width="50%" style="background-color: #FF00FF; color: #FF00FF"><br/><br/><br/><br/><br/><br/><br/><br/></div></td>
+                <td width="50%" colspan="3"><img id='off' gazetime="0.7"  onclick="shutdown(0)" ongaze="shutdown(0)" src="turn.png" style="height: 75px;width: 75px;"></td>
             </tr>
         </table>
-        <textarea hidden="hidden" id="r">128</textarea>
-        <textarea hidden="hidden" id="g">128</textarea>
-        <textarea hidden="hidden" id="b">128</textarea>
+        <textarea hidden="hidden" id="r">0</textarea>
+        <textarea hidden="hidden" id="g">0</textarea>
+        <textarea hidden="hidden" id="b">0</textarea>
     </body>
 </html>

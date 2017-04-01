@@ -1,4 +1,4 @@
 <@
 _CONNECTION.responseHeaders.Add("Content-type", "text/plain");
-echo(File.ReadAllText("web_docs/synthisizer/" + _GET["file"]));
+echo(File.ReadAllText("web_docs/synthesizer/" + _GET["file"]));
 @>

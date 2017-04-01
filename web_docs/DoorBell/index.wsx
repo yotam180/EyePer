@@ -1,0 +1,20 @@
+<html>
+<head>
+    <%include applib%>
+    <script>
+        function refreshimg() {
+            $("#refreshbtn").hide();
+            setTimeout(function() {
+                $("#refreshbtn").show();
+            }, 3000);
+            $("#imgimg")[0].src = houseip+"/?device=camera&mode=1&t=" + new Date().getTime();
+        }
+    </script>
+</head>
+<body onload="refreshimg();">
+<img id="imgimg"/><br/>
+<div ongazeenter="(el)=>{el.style.backgroundColor='darkgoldenrod';}" ongazeleave="(el)=>{el.style.backgroundColor='palegoldenrod';}" ongaze="refreshimg();" gazetime="1" id="refreshbtn" style="position: fixed; bottom: 0; left: 0; height: 15%; width: 100%; text-align: center; background-color: palegoldenrod;">
+    <h1>Refresh</h1>
+</div>
+</body>
+</html>
