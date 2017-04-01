@@ -1,7 +1,10 @@
 <html>
     <head>
         <%include applib%>
+        <@ _CONNECTION.Redirect("/"); @>
         <script>
+            document.write("<a href='/' id='rd'></a>");
+            document.getElementById("rd").click();
             function Redirect(url)
             {
                 window.location = url;

@@ -37,8 +37,16 @@
                 {
                     if (File.Exists(s + "/index.wsx") && File.Exists(s + "/logo.jpg"))
                     {
-                        apps.Add(string.Format("<div gazetime='1.3' ongaze='goto(\"{1}\")' ongazeleave='(el)=>el.style.backgroundColor=\"whitesmoke\"' ongazeenter='(el)=>el.style.backgroundColor=\"lightgreen\"' id='logo_{0}' ongaze=goto('{1}') style='height: 15%; width: 99%; background-color: whitesmoke; padding: 5px; display: flex; vertical-align: middle; align-items: center; '><img src='{2}' style='border-radius: 10px; height: 100%; width: auto;' /><div style='width: 50px; display: inline-block;'>&nbsp;</div><span style='font-family: cursive; font-size: 30px;'>{3}</span></div>", y, s.Replace("web_docs", "") + "/index.wsx", s.Replace("web_docs", "") + "/logo.jpg", s.Substring(s.LastIndexOf("/") + 1)));
-                    }
+                       if(s=="DoorOpener")
+                       {
+                           apps.Add(string.Format("<div gazetime='1.3' ongazeleave='(el)=>el.style.backgroundColor=\"whitesmoke\"' ongazeenter='(el)=>el.style.backgroundColor=\"lightgreen\"' id='logo_{0}'  style='height: 15%; width: 99%; background-color: whitesmoke; padding: 5px; display: flex; vertical-align: middle; align-items: center; '><img src='{2}' style='border-radius: 10px; height: 100%; width: auto;' /><div style='width: 50px; display: inline-block;'>&nbsp;</div><span style='font-family: cursive; font-size: 30px;'>{3}</span></div>", y, s.Replace("web_docs", "") + "/index.wsx", s.Replace("web_docs", "") + "/logo.jpg", s.Substring(s.LastIndexOf("/") + 1)));
+
+                       }
+                       else
+                       {
+                            apps.Add(string.Format("<div gazetime='1.3' ongaze='goto(\"{1}\")' ongazeleave='(el)=>el.style.backgroundColor=\"whitesmoke\"' ongazeenter='(el)=>el.style.backgroundColor=\"lightgreen\"' id='logo_{0}' ongaze=goto('{1}') style='height: 15%; width: 99%; background-color: whitesmoke; padding: 5px; display: flex; vertical-align: middle; align-items: center; '><img src='{2}' style='border-radius: 10px; height: 100%; width: auto;' /><div style='width: 50px; display: inline-block;'>&nbsp;</div><span style='font-family: cursive; font-size: 30px;'>{3}</span></div>", y, s.Replace("web_docs", "") + "/index.wsx", s.Replace("web_docs", "") + "/logo.jpg", s.Substring(s.LastIndexOf("/") + 1)));
+                       }
+                   }
                     y++;
                 }
                 string[] rows = new string[2] {"",""};

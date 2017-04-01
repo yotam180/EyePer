@@ -53,7 +53,7 @@
 				});
 			}
 			
-			EyeX.attachGaze($("#speakbtn")[0], (el) => { responsiveVoice.speak($("#word").text().replace(/\_/g, " "), "UK English Male"); el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200)});
+			EyeX.attachGaze($("#speakbtn")[0], (el) => { updateA();responsiveVoice.speak($("#word").text().replace(/\_/g, " "), "UK English Male"); el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200)});
 			EyeX.attachGaze($("#backspace")[0], (el) => {backspace();el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200);});
 			EyeX.attachGaze($("#clear")[0], (el) => {clear(); el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200)});
 			EyeX.attachGaze($("#whitespace")[0], (el) => { type(' '); el.style.backgroundColor = "skyblue";setTimeout(function() {el.style.backgroundColor = null;}, 200)});
@@ -62,7 +62,15 @@
 				$("#cursor").css({top: y, left: x});
 			}
 		});
-		
+		function updateA()
+		{
+			var words = $("#word").text();
+			var words1 = words.split(" ");
+			for(i=0;i<words1.length;i++)
+			{
+				$.ajax("autoComplete.wsx?mode=U&str="+words1[i]);
+			}
+		}
 		function type(l) {
 			$("#word").text($("#word").text() + l);
 			var word = $("#word").text().substring($("#word").text().lastIndexOf(" ")).trim();
