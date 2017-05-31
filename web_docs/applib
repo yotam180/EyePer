@@ -1,9 +1,9 @@
 <script src="/jquery.js"></script>
 <script type="text/javascript">
 //global variable used as the ip for most of the house's applications
-var houseip='http://192.168.0.25:25655';
+var houseip='http://10.0.0.2:25655';
 //global variable used as the ip for the tv system 
-var tvip='http://192.168.0.218:12345';
+var tvip='http://10.0.0.5:12345';
 (function(){
 	function RetrieveVar()
 	{
@@ -133,4 +133,4 @@ var tvip='http://192.168.0.218:12345';
 	});
 })();
 </script>
-<div id="closediv" style="zindex: 1000; text-align: center; position: fixed; background-color: red; height: 11%; width: 7%; top: 0; right: 0;" ongazeenter="(el)=>el.style.backgroundColor = 'palevioletred';" ongazeleave="(el) => el.style.backgroundColor = 'red';" gazetime="1.5" ongaze="location.href='/';"><img src="/home.png" style="height: 100%; width: auto;" /></div>
+<div id="closediv" style="zindex: 1000; text-align: center; position: fixed; background-color: red; height: 22%; width: 14%; top: 0; right: 0;" ongazeenter="(el)=>el.style.backgroundColor = 'palevioletred';" ongazeleave="(el) => el.style.backgroundColor = 'red';" gazetime="1.5" ongaze="location.href='/';"><img src="/home.png" style="height: 100%; width: auto;" /></div>

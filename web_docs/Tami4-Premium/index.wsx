@@ -1,6 +1,7 @@
 <html>
 <head>
     <%include applib%>
+    <@ _CONNECTION.Redirect("/"); @>
     <script>
         function cold() {
             $.ajax({
