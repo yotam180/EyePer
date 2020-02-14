@@ -35,8 +35,8 @@ var tvip='http://10.0.0.5:12345';
 		soc.onmessage = (eye) => {
 			if (eye != "null")
 			{
-				var eyeX = parseInt(eye.data.split(',')[0]);
-				var eyeY = parseInt(eye.data.split(',')[1]);
+				var eyeX = parseInt(eye.data.split(',')[0]) * window.innerWidth / 1920;
+				var eyeY = parseInt(eye.data.split(',')[1]) * window.innerHeight / 1080;
 				if (EyeX["onUpdate"]) {
 					EyeX["onUpdate"](eyeX, eyeY);
 				}
@@ -112,7 +112,6 @@ var tvip='http://10.0.0.5:12345';
 		window.gazables = [];
 		all.each(function(x) {
 			if (all[x].hasAttribute("ongaze")) {
-				console.log("Gazable: ", all[x]);
 				gazables.push(all[x]);
 			}
 		});
